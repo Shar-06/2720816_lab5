@@ -116,19 +116,19 @@ app.post("/books/:id/details", (req, res) => {
 //8. Removes a detail from a book.
 app.delete("/books/:id/details/:detailId", (req, res) => {
     const book = books.find(b => b.id === parseInt(req.params.id));
-    if(!book){
-        return res.status(404).json({error: "Not Found"});
+    if (!book) {
+        return res.status(404).json({ error: "Book not found" });
     }
 
-    const {author, genre, publicationYear} = req.body;
-    if(!author || !genre || !publicationYear){
-        return res.status(400).json({error: 'Bad Request'});
+    const detailIndex = book.details.findIndex(d => d.id === parseInt(req.params.detailId));
+    if (detailIndex === -1) {
+        return res.status(404).json({ error: "Detail not found" });
     }
 
-    book.details.push({author, genre, publicationYear});
+    book.details.splice(detailIndex, 1);
+    
     res.json(book);
 });
-
 
 //Start server on the port
 app.listen(PORT, () => {
